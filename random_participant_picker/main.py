@@ -3,7 +3,7 @@ from firebase_admin import credentials, firestore
 from random import randint
 
 # Enter id of event here
-EVENT_ID = u'f21kickoff'
+EVENT_ID = u'eos-s22'
 
 EVENT_COLLECTION = u'event_data'
 PROFILE_COLLECTION = u'profile_data'
@@ -57,11 +57,14 @@ def print_user_info(lucky_user):
 def main():
     db = initialize_db()
     participants_list = fetch_participants_emails(db)
-
-    lucky_index = randint(0, len(participants_list) - 1)
-    lucky_user = fetch_user_data(db, participants_list[lucky_index])
-
-    print_user_info(lucky_user)
+    winners = set()
+    for i in range(0, 20):
+        lucky_index = randint(0, len(participants_list) - 1)
+        while lucky_index in winners and len(participants_list) >= 20:
+            lucky_index = randint(0, len(participants_list) - 1)
+        winners.add(lucky_index)
+        lucky_user = fetch_user_data(db, participants_list[lucky_index])
+        print_user_info(lucky_user)
 
 
 if __name__ == '__main__':
